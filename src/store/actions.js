@@ -116,6 +116,8 @@ const actions = {
 
   // 上传文件
   uploadFile ({ commit, state }, fileList) {
+    console.log(fileList);
+    
     Toast.loading({
       mask: true,
       duration: 0,
@@ -127,15 +129,18 @@ const actions = {
       const comFile = await new Compress().compress(it.file, 0.4, false)
       const params = new FormData()
       params.append('file', comFile)
-      return Api.uploadFiles(params)
+      // params.file=fileList[0].file.name
+      return Api.uploadFilesurl(params)
     })
 
     return Promise.all(arr)
       .then(data => {
         const resulte = data[0]
+        // resulte.file=1
         if (resulte.code === 1) {
           const res = data.map(it => it.data.url)
           Toast.success('上传成功')
+          
           return res
         } else {
           // Toast.fail(resulte.msg)

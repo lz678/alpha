@@ -1,9 +1,9 @@
 <!-- market -->
 <template>
   <div class="market">
-    <van-nav-bar fixed title="交易中心" right-text="发布订单" @click-right="isTip=true" />
+    <van-nav-bar fixed title="交易中心" right-text="发布订单" @click-right="handpush" />
     <!-- <div class="title">交易中心</div> -->
-    <div class="main">
+    <div class="typebox">
       <div class="type">
         <div
           v-for="(item,index) in typelist"
@@ -12,126 +12,56 @@
           @click="changetype(item,index)"
         >{{item.coin_name}}</div>
       </div>
-      <div class="bgc"></div>
+      <!-- <div class="bgc"></div> -->
+    </div>
+    <div class="main">
+      <!-- <div class="type">
+        <div
+          v-for="(item,index) in typelist"
+          :class="{typeclass:index==type}"
+          :key="index"
+          @click="changetype(item,index)"
+        >{{item.coin_name}}</div>
+      </div>
+      <div class="bgc"></div>-->
       <div class="type-name">{{typename}}走势图</div>
       <div id="myChart" :style="{width: '320px', height: '250px'}"></div>
       <div class="bgc"></div>
-      <!-- <div class="market_type">
-        <div class="type_item" :class="{'active':curType===1}" @click="curType =1">普通求购</div>
-        <div class="type_item" :class="{'active':curType===2}" @click="curType =2">服务商求购</div>
-      </div>-->
 
-      <!-- <div class="total">
-        <div class="total_item">
-          <div class="total_label">均价（昨/今）</div>
-          <div class="total_value">$1.81/$1.80</div>
-        </div>
-        <div class="total_item">
-          <div class="total_label">最高（昨/今）</div>
-          <div class="total_value">$1.81/$1.80</div>
-        </div>
-        <div class="total_item">
-          <div class="total_label">当前</div>
-          <div class="total_value">$1.2</div>
-        </div>
-      </div>
-
-      <div class="total">
-        <div class="total_item">
-          <div class="total_label">成交（昨/今）</div>
-          <div class="total_value">$1.81/$1.80</div>
-        </div>
-        <div class="total_item">
-          <div class="total_label">买量）</div>
-          <div class="total_value">5035828</div>
-        </div>
-        <div class="total_item">
-          <div class="total_label">涨跌</div>
-          <div class="total_value">+1.7%</div>
-        </div>
-      </div>-->
-
-      <!-- <div class="total">
-        <div class="total_item">
-          <div class="total_label">今日价格</div>
-          <div class="total_value">{{total.today_trade_price}}</div>
-        </div>
-        <div class="total_item">
-          <div class="total_label">今日成交量</div>
-          <div class="total_value">{{total.today_trade_num}}</div>
-        </div>
-        <div class="total_item">
-          <div class="total_label">求购总量</div>
-          <div class="total_value">{{total.buy_count}}</div>
-        </div>
-      </div>-->
-
-      <!-- <div class="sort">
-        <div class="sort_item" @click="handleChangeSort('curSortTime')">
-          <div class="sort_name">时间</div>
-          <div class="sort_opt" :class="{'time_top':curSortTime === 2}"></div>
-        </div>
-        <div class="sort_item" @click="handleChangeSort('curSortPrice')">
-          <div class="sort_name">单价</div>
-          <div class="sort_opt" :class="{'price_top':curSortPrice === 2}"></div>
-        </div>
-        <div class="sort_item" @click="handleChangeSort('curSortNum')">
-          <div class="sort_name">数量</div>
-          <div class="sort_opt" :class="{'num_top':curSortNum === 2}"></div>
-        </div>
-        <div class="sort_item" @click="handleChangeSort('curSortClinch')">
-          <div class="sort_name">30日成交</div>
-          <div class="sort_opt" :class="{'clinch_top':curSortClinch === 2}"></div>
-        </div>
-      </div>-->
-      <!-- 
-      <div class="search">
-        <form :action="handleSearch">
-          <van-search
-            v-model="search"
-            placeholder="请输入ID搜索/溢价订单请输入完整手机号"
-            left-icon
-            right-icon="search"
-            @search="handleSearch"
-          >
-            <span slot="left-icon"></span>
-            <van-icon slot="right-icon" name="search" size="22px" @click="handleSearch" />
-          </van-search>
-        </form>
-      </div>-->
-      <div class="first" @click="role">
+      <div class="first" @click="roleone">
         <div class="top" :class="{typeone:select==1}">买方</div>
-        <div class="top" :class="{typeone:select==2}">卖方</div>
+        <!-- <div class="top" :class="{typeone:select==2}">卖方</div> -->
       </div>
       <div class="list_wrap">
-        <market-list ref="list" :search="search" :coin_id="a" :side="b" :total="total" />
+        <market-list ref="list" />
       </div>
     </div>
 
-    <market-tip :isShow.sync="isTip"></market-tip>
+    <market-tip ref="tip" :isShow.sync="isTip" :typecoin="typename" :coin_id="coin_id"></market-tip>
   </div>
 </template>
 
 <script>
+import { setStore, getStore } from "@/utils/utils";
 import echarts from "echarts";
 import marketList from "./list";
 import marketTip from "./modules/tip";
 export default {
   name: "market",
   components: { marketList, marketTip },
-  // components: { marketTip },
+
   data() {
     return {
       charts: "",
       opinion: [],
       opinionData: [],
-      price: [1, 5, 2, 7],
+      price: [],
       curType: 1,
       type: 0,
       select: 1,
       typename: "",
       coin_id: 1,
-      side: 1,
+      side: 2,
       curSortTime: 1,
       curSortPrice: 1,
       curSortNum: 1,
@@ -143,38 +73,31 @@ export default {
       isTip: false
     };
   },
-  computed: {
-    a() {
-      return this.coin_id;
-    },
-    b() {
-      return this.side;
-    }
+  updated() {
+    this.getmap();
+    this.handleSearch();
   },
   methods: {
-    role(e) {
+    // 切换角色
+    roleone(e) {
       console.log(e);
-
       console.log(e.target.innerText);
       if (e.target.innerText == "买方") {
         this.select = 1;
         this.side = 2;
-        this.getmap();
-        this.handleSearch();
-        // console.log(this.coin_id);
-        // console.log(this.side);
-        return;
+        this.$refs.list.side = this.side;
+
+        // this.handleSearch();
       }
       if (e.target.innerText == "卖方") {
         this.select = 2;
         this.side = 1;
-        this.getmap();
-        this.handleSearch();
-        // console.log(this.coin_id);
-        // console.log(this.side);
-        return;
+        this.$refs.list.side = this.side;
+
+        // this.handleSearch();
       }
     },
+    // 走势图
     drawLine() {
       this.charts = echarts.init(document.getElementById("myChart"));
       this.charts.setOption({
@@ -195,38 +118,29 @@ export default {
             }
           }
         },
-        yAxis: {
-          name: "单位(元)",
-          type: "category",
-          boundaryGap: false,
-          data: this.opinionData
-        },
-
+        yAxis: [{ name: "单位(元)", type: "value" }],
         series: [
           {
-            name: this.typename,
             type: "line",
             stack: "总量",
-            data: this.price
+            data: this.opinionData
           }
         ]
       });
     },
+    // 获取某币种走势
     getmap() {
-      this.$api
-        .getmap({ coin_id: this.coin_id, side: this.side })
-        .then(data => {
-          console.log(data, "走势图");
-          if (data.code == 1) {
-            this.opinion = data.data.info_x;
-            this.opinionData = data.data.info_y;
-            this.drawLine();
-          }
-        });
+      this.$api.getmap({ coin_id: this.coin_id }).then(data => {
+        // console.log(data, "走势图");
+        if (data.code == 1) {
+          this.opinion = data.data.info_x;
+          this.opinionData = data.data.info_y;
+          this.drawLine();
+        }
+      });
     },
+    // 获取币种
     gettype() {
-      console.log(11111);
-
       this.$api.gettype().then(data => {
         console.log(data, "获取币种");
         if (data.code == 1) {
@@ -236,52 +150,32 @@ export default {
         }
       });
     },
+    // 改变币种
     changetype(a, b) {
-      // console.log(a,b);
       this.type = b;
-      // this.side = b;
       this.typename = a.coin_name;
       this.coin_id = a.coin_id;
-      console.log(this.typename, this.coin_id);
-      this.getmap();
+      this.$refs.list.coin_id = this.coin_id;
+      // this.getmap();
+      // this.handleSearch();
     },
-    // getMarketTotal() {
-    //   this.$api.getMarketTotal().then(data => {
-    //     if (data.code === 1) {
-    //       this.total = data.data.header_info;
-    //       this.rang = data.data.trade;
-    //     } else {
-    //       this.$toast(data.msg);
-    //     }
-    //   });
-    // },
-
-    handleRule() {},
-
-    // handleChangeSort(type) {
-    //   let sort = this[type] === 1 ? 2 : 1;
-    //   this[type] = sort;
-    // },
-
+    // 获取列表
     handleSearch() {
-      console.log(this.$refs.list.coin_id);
-      console.log(this.$refs.list.side);
-      // this.$refs.list.coin_id
-      //  this.$refs.list.side
+      this.$refs.list.page = 1;
       this.$refs.list.getMarketList();
+    },
+    handpush() {
+      this.isTip = true;
+      this.$refs.tip.getprice();
+      this.$refs.tip.getmax();
     }
   },
 
   created() {
     this.gettype();
-    // this.isTip = true;
     this.getmap();
-    // this.drawLine();
   },
   mounted() {
-    // this.getMarketTotal();
-    // this.gettype();
-    // this.getmap()
     this.drawLine();
   }
 };
@@ -290,7 +184,6 @@ export default {
 <style lang='scss'>
 .first {
   margin-top: 6px;
-  // width: 100%;
   display: flex;
   justify-content: space-around;
 
@@ -300,7 +193,6 @@ export default {
     text-align: center;
     border-radius: 4px;
     line-height: 2.5rem;
-    // align-items: center;
     border: 1px solid #bebebe;
   }
   .typeone {
@@ -314,11 +206,7 @@ export default {
   padding-top: 10px;
   font-weight: 600;
 }
-.bgc {
-  width: 100%;
-  height: 1vh;
-  background-color: #f4f4f4;
-}
+ 
 #myChart {
   margin: 0 auto;
 }
@@ -326,19 +214,7 @@ export default {
   color: #567dff;
   border-bottom: 2px solid #567dff;
 }
-.type {
-  width: 100%;
-  height: 3rem;
-  margin-top: 46px;
-  border-bottom: 1px solid #efefef;
-  // border: 1px solid #efefef;
-  line-height: 3rem;
-  display: flex;
-  justify-content: space-around;
-  color: black;
-
-  // font-size: 12px;
-}
+ 
 .title {
   width: 100%;
   height: 3rem;
@@ -354,12 +230,39 @@ export default {
   width: 100%;
   height: 100vh;
   background-color: #fff;
+  .typebox {
+    width: 100%;
+    position: fixed;
+    top: 46px;
+    left: 0px;
+    z-index: 1999;
+    background-color: #f4f4f4;
+    .bgc {
+      width: 100%;
+      height: 1vh;
+      
+    }
+    .type {
+      width: 100%;
+      height: 3rem;
+      z-index: 1999;
+      border-bottom: 1px solid #efefef;
+      line-height: 3rem;
+      display: flex;
+      justify-content: space-around;
+      color: black;
+ 
+    }
+  }
   .main {
-    // padding: 1.6rem;
+    
+    margin-top: 92px;
+    z-index: -1;
+    
     .list_wrap {
-      border:1px solid red;
       width: 100%;
       height: 46vh;
+      overflow: scroll;
       margin-bottom: 52px;
     }
   }

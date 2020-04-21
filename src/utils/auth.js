@@ -68,3 +68,36 @@ import { runInNewContext } from 'vm'
 //     }
 //   }
 // })
+
+
+
+
+router.beforeEach(async (to, from, next) => {
+  // handleNext(next)
+
+  const whiterList = ['login']
+  const isOpen = to.meta.isOpen
+  const stoToken = store.state.token
+  if (!isOpen) {
+    Toast('敬请期待')
+    next(false)
+  } else if (stoToken) {
+    // handleNext(next)
+    next()
+  } else if (whiterList.includes(to.name)) {
+    // handleNext(next)
+    next()
+  } else {
+    const locToken = getStore('token')
+    if (locToken) {
+      // const res = await store.dispatch('checktLoginToken')
+      // store.dispatch('getApiHost')
+      // handleLocToken(next)
+      // handleLocToken(next)
+      next()
+      // res ? next() : next('/login')
+    } else {
+      next('/login')
+    }
+  }
+})

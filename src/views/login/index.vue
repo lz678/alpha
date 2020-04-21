@@ -9,9 +9,9 @@
     <div class="login_wrap">
       <van-field class="account" v-model="info.account" type="tel" placeholder="请输入手机号">
         <div slot="left-icon">
-          <div class="login_icon">
+          <!-- <div class="login_icon"> -->
             <img src="../../assets/images/deng1.png" alt />
-          </div>
+          <!-- </div> -->
         </div>
       </van-field>
   
@@ -102,6 +102,7 @@ export default {
             value: data.data.userinfo.token
           });
           setStore("userInfo", data.data.userinfo);
+          setStore('userid',data.data.userinfo.id)
           setStore("token", { token: data.data.userinfo.token });
           this.$router.push("/layout/me");
         }
@@ -202,7 +203,8 @@ export default {
   }
 
   .account .van-field__left-icon {
-    width: 2rem;
+    // width: 2rem;
+     margin-right: 0.8rem;
   }
   .password .van-field__left-icon {
     margin-right: 0.8rem;

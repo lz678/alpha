@@ -23,7 +23,7 @@ const reg = /^(http|https)/
 axios.interceptors.request.use(
   // 在请求发送之前做一些事
   config => {
-    console.log(config);
+    // console.log(config);
     
     if (!reg.test(config.url)) {
       config.url = host + '/api/' + config.url

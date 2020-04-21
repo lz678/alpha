@@ -5,11 +5,11 @@
     <div>
       <van-swipe :autoplay="3000" indicator-color="white">
         <van-swipe-item v-for="(item,index) in swipelist" :key="index">
-          <img class="my-swipe" :src="item" alt />
+          <img class="my-swipe" :src="'http://fulishijie.oss-cn-hangzhou.aliyuncs.com'+item.img" alt />
         </van-swipe-item>
       </van-swipe>
     </div>
-    <van-notice-bar text="通知内容egend字段,是为了配置下图的表现的;注意data字段的数组需要对应每条折线的名称 鼠标" left-icon="volume-o" />
+    <van-notice-bar @click="open" :text="notice" left-icon="volume-o" />
 
     <div class="foot">
       <div class="last">最近成交</div>
@@ -22,17 +22,19 @@
         finished-text="人家也是有底线的"
       >
         <div class="list" v-for="(item,index) in list" :key="index">
-          <div>
-            <div class="styletwo">{{item.money}}</div>
-            <div class="styleone">{{item.id}}</div>
-          </div>
-          <div>
-            <div class="styletwo">{{item.money}}</div>
-            <div class="styleone">{{item.id}}</div>
-          </div>
-          <div>
-            <div class="isup">{{item.money}}</div>
-          </div>
+          <!-- <div> -->
+            <div class="styletwo">{{item.coin_name}}</div>
+            <!-- <div class="styleone">{{item.id}}</div> -->
+          <!-- </div> -->
+          <!-- <div> -->
+            <div class="styleone">¥{{item.min_price}}</div>
+            <div class="stylethree">{{item.add_times}}</div>
+            <!-- <div class="styleone">{{item.id}}</div> -->
+          <!-- </div> -->
+          <!-- <div> -->
+            <!-- <div class="isup">{{item.rate}}</div> -->
+            <div class="isup" :class="{down:parseInt(item.rate)>0?false:true}">{{item.rate}}</div>
+          <!-- </div> -->
         </div>
       </van-list>
       <!-- </van-pull-refresh> -->
@@ -46,12 +48,13 @@ export default {
 
   data() {
     return {
+      notice:'',
       curTab: 0,
       page: 0,
       isLoadRefresh: false,
       isLoading: false,
       isFinished: false,
-
+      pageSize:8,
       list: [],
       swipelist: [
         require("@/assets/images/BANNER.png"),
@@ -59,14 +62,38 @@ export default {
       ]
     };
   },
-  computed: {},
+//  filters:{
+//    time(a){
+//      var addtime=new Date(a)
+//      var Time=new Date().getTime()
+//       // var addtime=a.toString()
+//      var addyear=addtime.getFullYear()
+//      var addmonth=addtime.getMonth()
+//      var adddata=addtime.getDate()
+//      var b=addtime.getTime()
+//     //  console.log(b,Time);
+     
+//      return `${addyear}-${addmonth}-${adddata}`
+//    }
+//  },
   methods: {
+    // gettime(){
+    //   var nowtime=new Date()
+    //   var month=nowtime.getMonth()+1
+    //   var data=nowtime.getDate()
+    //   console.log(month,data);
+      
+    // },
     // refreshList() {
     //   this.page = 1;
     //   console.log("下拉刷新");
     //   this.isLoadRefresh = false;
     //   this.getMallList();
     // },
+    open(e){
+      // console.log(e);
+      this.$router.push('/notice')
+    },
     pullList() {
       console.log("上拉加载");
       this.page++;
@@ -78,16 +105,23 @@ export default {
       const page = this.page;
       if (page === 0) return false;
       if (page === 1) this.list = [];
-      this.$api.getMarketBuyList({ p: this.page }).then(data => {
+      this.$api.getMarketBuyList({ p: this.page,pageSize:this.pageSize }).then(data => {
         console.log(data, "首页");
         this.isLoadRefresh = false;
         this.isLoading = false;
         if (data.code === 1) {
-          if (data.data.list) {
-            this.list.push(...data.data.list);
-          }
+          this.notice=data.data.notice.title
+          this.swipelist=data.data.image
+          // if (data.data.info) {
+          //   this.list.push(...data.data.info);
+          // }
+           if (page === 1) {
+              this.list = data.data.info;
+            } else {
+              this.list.push(...data.data.info);
+            }
 
-          if (data.data.total / 10 <= page) {
+          if (data.data.total / 8 <= page) {
             this.isFinished = true;
           } else {
             this.isFinished = false;
@@ -100,7 +134,13 @@ export default {
       });
     }
   },
-  created() {},
+  created() {
+    this.getMallList()
+     
+     
+    
+    // this.gettime()
+  },
   mounted() {}
 };
 </script>
@@ -117,6 +157,7 @@ export default {
   .nav {
     width: 100%;
     height: 15%;
+    font-size: 1.5rem;
     text-align: center;
     line-height: 3.125rem;
   }
@@ -138,28 +179,45 @@ export default {
 
     .list {
       width: 100%;
-      height: 40px;
+      height: 3.4rem;
       // border: 1px solid red;
-
+      background-color: #F7F7F7;
       display: flex;
       justify-content: space-around;
       align-items: center;
       margin-bottom: 4px;
+      // &>div{
+      //   width: 20%
+      // }
       .styleone{
+        width: 20%;
+        font-size: 1.4rem;
         color:#949EA5;
       }
       .styletwo{
-        font-size: 1.5rem;
+        width: 20%;
+        text-align: center;
+        font-size: 1.4rem;
+        // color:#949EA5;
         // font-weight: 600;
+      }
+      .stylethree{
+         font-size: 1.2rem;
+        color:#949EA5;
       }
       .isup {
         width: 5rem;
         height: 25px;
+        // padding-left: 10px;
+        margin-right: .625rem;
         text-align: center;
 
         line-height: 25px;
         background-color: #03BE87;
         // border: 1px solid red;
+      }
+      .down{
+        background-color: #F8784C;
       }
     }
   }

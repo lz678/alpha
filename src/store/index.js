@@ -8,7 +8,8 @@ Vue.use(Vuex)
 
 const state = {
   token: '',
-
+  // isup:false,
+  // isok:false,
   isLoding: true,
 
   isShowOverlay: false,

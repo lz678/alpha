@@ -9,50 +9,26 @@
         :offset="100"
         finished-text="人家也是有底线的"
       >
-        <div class="item" v-for="item in list" :key="item.id">
-          <div>
-            <div class="styletwo">{{item.mobile}}</div>
-            <div class="styleone">{{item.deal_rate}}</div>
+        <div class="item" v-for="(item,index) in list" :key="index">
+          <div class="imgbox">
+            <img :src="require('@/assets/images/info.png')" alt="">
+           
           </div>
-          <div>
+          <div class="numbox">
             <div class="styletwo">数量：{{item.num}}</div>
             <div class="styleone">单价：{{item.price}}</div>
           </div>
           <div>
-            <div class="isup">{{item.btname}}</div>
+            <div class="isup" @click="pay(item)">{{item.btname}}</div>
           </div>
-          <!-- <div class="avatar">
-            <img :src="item.avatar" alt />
-          </div>
-          <div class="info">
-            <div class="nickname van-ellipsis">{{item.nickname}}</div>
-            <div class="id">ID：{{item.in_user_id}}</div>
-            <div class="price">
-              单价:
-              <span>{{item.money}}</span>
-              数量:
-              <span>{{item.num}}</span>
-            </div>
-            <div class="num">最近30日成交量：{{item.num_trade}}</div>
-          </div>
-          <div class="opt">
-            <div class="sell_btn" v-if="item.in_user_id!==userId" @click="handleSell(item)">卖给TA</div>
-            <div class="sell_type">
-              <div class="alipay" v-if="hasPay(item.payments,'alipay')">
-                <img src="../../assets/images/alipay.png" alt />
-              </div>
-              <div class="wepay" v-if="hasPay(item.payments,'weixin')">
-                <img src="../../assets/images/wepay.png" alt />
-              </div>
-            </div>
-          </div> -->
+        
         </div>
       </van-list>
     </van-pull-refresh>
-    <!-- <div class="publish" @click="isShowPub=true">发布</div> -->
+  
 
-    <sell-md :isShow.sync="isShowSell" :info="curInfo" @changeData="getMarketList" />
-    <market-pub :isShow.sync="isShowPub" :total="total" @changeData="getMarketList" />
+    <sell-md :isShow.sync="isShowSell" ref="md" :inf="payinfo"/>
+    <!-- <market-pub :isShow.sync="isShowPub" :total="total" @changeData="getMarketList" /> -->
   </div>
 </template>
 
@@ -65,11 +41,9 @@ export default {
   name: "market_list",
   components: { sellMd, marketPub },
   props: {
-    tab: Number,
-    search: String,
+   
     total: Object,
-    coin_id: Number,
-    side:Number
+    
   },
   data() {
     return {
@@ -81,9 +55,10 @@ export default {
       apiList: ["getMarketBuyList", "getServiceMarket"],
 
       list: [],
-       
+       coin_id:1,
+       side:2,
       userId: "",
-
+      payinfo:'',
       curInfo: {},
       isShowSell: false,
 
@@ -92,6 +67,14 @@ export default {
   },
   computed: {},
   methods: {
+    pay(e){
+      // console.log(e);
+      
+      this.isShowSell=true;
+      this.payinfo=e
+       this.$refs.md.aid=e.aid
+      this.$refs.md.getother()
+    },
     refreshList() {
       this.page = 1;
       console.log("下拉刷新");
@@ -100,26 +83,29 @@ export default {
     },
     pullList() {
       console.log("上拉加载");
-      // console.log(this.coin_id);
-      // console.log(this.side);
       this.page++;
       // this.getMarketList();
     },
     
     getMarketList() {
       console.log("获取列表");
+      // this.coin_id=1
+      // console.log(this.coin_id);
+      // console.log(this.side);
       const page = this.page;
       if (page === 0) return false;
       this.$api
-        .getMarketBuyList({ coin_id: this.coin_id, side: this.side,page:page })
+      // localStorage.getItem("side")
+        .gethomeList({ coin_id:this.coin_id, side:this.side   })
         .then(data => {
-          console.log(data,"列表");
+          // console.log(data,"列表");
           this.isLoadRefresh = false;
           this.isLoading = false;
           if (data.code === 1) {
             if (page === 1) {
               this.list = data.data.info;
             } else {
+              // this.list = data.data.info;
               this.list.push(...data.data.info)
               // this.list.concat(data.data.info);
             }
@@ -143,7 +129,7 @@ export default {
 
     // 卖出
     handleSell(info) {
-      console.log(info, "llll");
+      // console.log(info, "llll");
       this.curInfo = info;
       this.isShowSell = true;
     }
@@ -173,6 +159,15 @@ export default {
       justify-content: space-around;
       align-items: center;
       margin-bottom: 4px;
+      .numbox{
+        width: 34%;
+      }
+      .imgbox{
+        width: 10%;
+        img{
+          width: 100%
+        }
+      }
       .styleone{
         color:#949EA5;
       }

@@ -36,13 +36,21 @@ export default {
   // 上传文件
   uploadFiles: (data) => {
     let token = getStore('token')
-    return axios.post(host + '/addons/alioss/index/upload', data, {
+    return axios.post('http://yanbiwang.fulishijie.top/api/trade/upload_pay_img', data, {
       // headers['token']: token.token
       // http://www.faagy.cn/n
       headers: { 'token': token.token },
     })
   },
-
+   // 上传文件获取url
+  uploadFilesurl: (data) => {
+    let token = getStore('token')
+    return axios.post('http://yanbiwang.fulishijie.top/addons/alioss/index/upload', data, {
+      // headers['token']: token.token
+      // http://www.faagy.cn/n
+      headers: { 'token': token.token },
+    })
+  },
 
   // 获取下载地址
   getAppDownloadAddress: () => {
@@ -70,6 +78,6 @@ export default {
     return axios.get('coin/Afclist', { params: data })
   },
   postAuth: data => {
-    return axios.post('alipay/sign', data)
+    return axios.post('trade/user_real_do', data)
   }
 }

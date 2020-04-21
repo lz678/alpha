@@ -21,8 +21,13 @@ const mutations = {
       state[type] = value
     }
   },
-
-
+//是否上传了打印凭证
+// isUP(state,a){
+//   state.isup=a
+// },
+// isOK(state,a){
+//   state.isok=a
+// },
   // 获取验证码定时器
   setTimer (state) {
     state.showReminderTime = true

@@ -40,7 +40,7 @@ export default {
           title: '订单',
           icon: require('@/assets/images/ding1.png'),
           iconHl: require('@/assets/images/ding.png'),
-          route: '/layout/myorder'
+          route: '/layout/order'
         }, {
           title: '个人',
           icon: require('@/assets/images/ge.png'),
@@ -83,6 +83,7 @@ export default {
 
   .nav_item {
     width: 20%;
+    // border: 1px solid red;
     text-align: center;
     color: #929292;
   }
@@ -92,10 +93,16 @@ export default {
   }
 
   .icon {
+    width: 40%;
     margin: 0 auto;
+    img{
+      width: 100%;
+    }
   }
  .nav_title{
-   width: 100%;
+   width: 60%;
+   margin: 0 auto;
+   text-align: center;
  }
 }
 </style>

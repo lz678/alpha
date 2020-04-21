@@ -22,7 +22,10 @@ export default {
   getBuyMall: data => {
     return axios.post('book/buybook', data)
   },
-
+  //获取公告
+  getNotice(data){
+    return axios.post('index/message',data)
+  },
 
   // 兑换卷轴
   getAfcBuyMall: data => {

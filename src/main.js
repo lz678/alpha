@@ -3,7 +3,7 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import router from './router'
 import echarts from 'echarts';
-// 重置样式
+// 重置样式/
 import 'normalize.css/normalize.css'
 
 // vant

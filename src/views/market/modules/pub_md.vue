@@ -221,84 +221,84 @@ export default {
 </script>
 
 <style lang='scss'>
-.van-overlay {
-  z-index: 2012 !important;
-}
-.market_md {
-  z-index: 2013 !important;
-  .header {
-    display: flex;
-    align-items: center;
-  }
-  .title {
-    flex: 1;
-    text-align: center;
-    font-size: 1.44rem;
-  }
-  .close {
-    width: 1.6rem;
-    height: 1.6rem;
-    font-size: 1.6rem;
-  }
+// .van-overlay {
+//   z-index: 2012 !important;
+// }
+// .market_md {
+//   z-index: 2013 !important;
+//   .header {
+//     display: flex;
+//     align-items: center;
+//   }
+//   .title {
+//     flex: 1;
+//     text-align: center;
+//     font-size: 1.44rem;
+//   }
+//   .close {
+//     width: 1.6rem;
+//     height: 1.6rem;
+//     font-size: 1.6rem;
+//   }
 
-  .content {
-    margin-top: 2.4rem;
-  }
-  .sell_item {
-    display: flex;
-    align-items: center;
-    font-size: 1.44rem;
-    line-height: 4rem;
+//   .content {
+//     margin-top: 2.4rem;
+//   }
+//   .sell_item {
+//     display: flex;
+//     align-items: center;
+//     font-size: 1.44rem;
+//     line-height: 4rem;
 
-    .label {
-      width: 5rem;
-      margin-right: 2.8rem;
-      color: #bc0d46;
-      span {
-        margin-left: 1.5rem;
-      }
-    }
-    .value {
-      flex: 1;
-    }
-  }
-  .van-field {
-    margin-top: 1.6rem;
-    border-radius: 1.36rem;
-    border: 0.08rem solid #da2e63;
-  }
-  .van-cell {
-    padding: 0.72rem 1.28rem;
-  }
-  .van-cell__title {
-    margin-left: 0;
-  }
-  .van-field__label {
-    width: 5.6rem;
-    border-right: 1px solid #da2e63;
-  }
-  .van-field__control::-webkit-input-placeholder {
-    color: #fff;
-  }
-  .van-field__control {
-    color: #fff;
-  }
-  .btn {
-    margin-top: 2.4rem;
-    margin-bottom: 10px;
-  }
+//     .label {
+//       width: 5rem;
+//       margin-right: 2.8rem;
+//       color: #bc0d46;
+//       span {
+//         margin-left: 1.5rem;
+//       }
+//     }
+//     .value {
+//       flex: 1;
+//     }
+//   }
+//   .van-field {
+//     margin-top: 1.6rem;
+//     border-radius: 1.36rem;
+//     border: 0.08rem solid #da2e63;
+//   }
+//   .van-cell {
+//     padding: 0.72rem 1.28rem;
+//   }
+//   .van-cell__title {
+//     margin-left: 0;
+//   }
+//   .van-field__label {
+//     width: 5.6rem;
+//     border-right: 1px solid #da2e63;
+//   }
+//   .van-field__control::-webkit-input-placeholder {
+//     color: #fff;
+//   }
+//   .van-field__control {
+//     color: #fff;
+//   }
+//   .btn {
+//     margin-top: 2.4rem;
+//     margin-bottom: 10px;
+//   }
 
-  .right_icon {
-    display: flex;
-    align-items: center;
-  }
-  .van-icon-warning-o {
-    margin-left: 0.4rem;
-    font-size: 1.6rem;
-    color: #da2e63;
-  }
-  .van-switch__node {
-    background: #31222d;
-  }
-}
+//   .right_icon {
+//     display: flex;
+//     align-items: center;
+//   }
+//   .van-icon-warning-o {
+//     margin-left: 0.4rem;
+//     font-size: 1.6rem;
+//     color: #da2e63;
+//   }
+//   .van-switch__node {
+//     background: #31222d;
+//   }
+// }
 </style>

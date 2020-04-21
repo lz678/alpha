@@ -10,7 +10,18 @@
         finished-text="人家也是有底线的"
       >
         <div class="item" v-for="item in list" :key="item.id">
-          <div class="avatar">
+          <div>
+            <div class="styletwo">{{item.mobile}}</div>
+            <div class="styleone">{{item.deal_rate}}</div>
+          </div>
+          <div>
+            <div class="styletwo">数量：{{item.num}}</div>
+            <div class="styleone">单价：{{item.price}}</div>
+          </div>
+          <div>
+            <div class="isup">{{item.btname}}</div>
+          </div>
+          <!-- <div class="avatar">
             <img :src="item.avatar" alt />
           </div>
           <div class="info">
@@ -28,13 +39,13 @@
             <div class="sell_btn" v-if="item.in_user_id!==userId" @click="handleSell(item)">卖给TA</div>
             <div class="sell_type">
               <div class="alipay" v-if="hasPay(item.payments,'alipay')">
-                <!-- <img src="../../assets/images/alipay.png" alt /> -->
+                <img src="../../assets/images/alipay.png" alt />
               </div>
               <div class="wepay" v-if="hasPay(item.payments,'weixin')">
-                <!-- <img src="../../assets/images/wepay.png" alt /> -->
+                <img src="../../assets/images/wepay.png" alt />
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </van-list>
     </van-pull-refresh>
@@ -57,7 +68,8 @@ export default {
     tab: Number,
     search: String,
     total: Object,
-    // coin_id: String
+    coin_id: Number,
+    side:Number
   },
   data() {
     return {
@@ -65,11 +77,11 @@ export default {
       isLoadRefresh: false,
       isLoading: false,
       isFinished: false,
-      coin_id: 1,
+      // coin_id: 1,
       apiList: ["getMarketBuyList", "getServiceMarket"],
 
       list: [],
-      side: 1,
+       
       userId: "",
 
       curInfo: {},
@@ -88,6 +100,8 @@ export default {
     },
     pullList() {
       console.log("上拉加载");
+      // console.log(this.coin_id);
+      // console.log(this.side);
       this.page++;
       // this.getMarketList();
     },
@@ -97,7 +111,7 @@ export default {
       const page = this.page;
       if (page === 0) return false;
       this.$api
-        .getMarketBuyList({ coin_id: this.coin_id, side: this.side })
+        .getMarketBuyList({ coin_id: this.coin_id, side: this.side,page:page })
         .then(data => {
           console.log(data,"列表");
           this.isLoadRefresh = false;
@@ -106,15 +120,15 @@ export default {
             if (page === 1) {
               this.list = data.data.info;
             } else {
-              // this.list.push(...data.data.info)
-              this.list.concat(data.data.info);
+              this.list.push(...data.data.info)
+              // this.list.concat(data.data.info);
             }
 
-            // if (data.data.total / 10 <= page) {
-            //   this.isFinished = true
-            // } else {
-            //   this.isFinished = false
-            // }
+            if (data.data.total / 10 <= page) {
+              this.isFinished = true
+            } else {
+              this.isFinished = false
+            }
           } else {
             this.isLoadRefresh = false;
             this.isLoading = false;
@@ -123,9 +137,9 @@ export default {
         });
     },
 
-    hasPay(list, type) {
-      return list.includes(type);
-    },
+    // hasPay(list, type) {
+    //   return list.includes(type);
+    // },
 
     // 卖出
     handleSell(info) {
@@ -146,20 +160,37 @@ export default {
 
 <style lang='scss'>
 .market_list {
+  // width: 100%;
+  // height: 100%;
   // height: 50vh;
   padding-top: 1.2rem;
-  .item {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-    padding: 1.2rem;
-    border-radius: 0.4rem;
-    color: black;
-    // background: #34222f;
-    overflow: hidden;
-  }
+   
+    .item {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      background-color: #F4F4F4;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 4px;
+      .styleone{
+        color:#949EA5;
+      }
+      .styletwo{
+        color: #193445;
+        font-size: 1.5rem;
+        // font-weight: 600;
+      }
+      .isup {
+        width: 5rem;
+        height: 25px;
+        text-align: center;
 
+        line-height: 25px;
+        background-color: #03BE87;
+        // border: 1px solid red;
+      }
+    }
   .avatar {
     width: 2.72rem;
     height: 2.72rem;

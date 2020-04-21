@@ -3,6 +3,10 @@
 import axios from '@/utils/request'
 
 export default {
+  //获取走势图
+  getmap: (data) => {
+    return axios.post('trade/trade_map',data)
+  },
   // 获取数量区间
   getNumRang: () => {
     return axios.get('index/getlimit')
@@ -27,7 +31,7 @@ export default {
 
   // 买单列表
   getMarketBuyList: data => {
-    return axios.post('trade/index', { data })
+    return axios.post('trade/index', data)
   },
 
 

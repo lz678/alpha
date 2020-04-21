@@ -12,8 +12,10 @@
           @click="changetype(item,index)"
         >{{item.coin_name}}</div>
       </div>
+      <div class="bgc"></div>
       <div class="type-name">{{typename}}走势图</div>
-      <div id="myChart"></div>
+      <div id="myChart" :style="{width: '320px', height: '250px'}"></div>
+      <div class="bgc"></div>
       <!-- <div class="market_type">
         <div class="type_item" :class="{'active':curType===1}" @click="curType =1">普通求购</div>
         <div class="type_item" :class="{'active':curType===2}" @click="curType =2">服务商求购</div>
@@ -97,9 +99,12 @@
           </van-search>
         </form>
       </div>-->
-
+      <div class="first" @click="role">
+        <div class="top" :class="{typeone:select==1}">买方</div>
+        <div class="top" :class="{typeone:select==2}">卖方</div>
+      </div>
       <div class="list_wrap">
-        <market-list ref="list" :search="search" :coin_id="this.coin_id" :total="total" />
+        <market-list ref="list" :search="search" :coin_id="a" :side="b" :total="total" />
       </div>
     </div>
 
@@ -108,25 +113,25 @@
 </template>
 
 <script>
-// var echarts = require('echarts');
-let echarts = require("echarts/lib/echarts");
-require("echarts/lib/chart/line");
-// 以下的组件按需引入
-require("echarts/lib/component/tooltip"); // tooltip组件
-require("echarts/lib/component/title"); //  title组件
-require("echarts/lib/component/legend"); // legend组件
+import echarts from "echarts";
 import marketList from "./list";
-
 import marketTip from "./modules/tip";
 export default {
   name: "market",
   components: { marketList, marketTip },
+  // components: { marketTip },
   data() {
     return {
+      charts: "",
+      opinion: [],
+      opinionData: [],
+      price: [1, 5, 2, 7],
       curType: 1,
       type: 0,
-      typename: '',
-      coin_id:Number,
+      select: 1,
+      typename: "",
+      coin_id: 1,
+      side: 1,
       curSortTime: 1,
       curSortPrice: 1,
       curSortNum: 1,
@@ -138,28 +143,107 @@ export default {
       isTip: false
     };
   },
-  computed: {},
+  computed: {
+    a() {
+      return this.coin_id;
+    },
+    b() {
+      return this.side;
+    }
+  },
   methods: {
+    role(e) {
+      console.log(e);
+
+      console.log(e.target.innerText);
+      if (e.target.innerText == "买方") {
+        this.select = 1;
+        this.side = 2;
+        this.getmap();
+        this.handleSearch();
+        // console.log(this.coin_id);
+        // console.log(this.side);
+        return;
+      }
+      if (e.target.innerText == "卖方") {
+        this.select = 2;
+        this.side = 1;
+        this.getmap();
+        this.handleSearch();
+        // console.log(this.coin_id);
+        // console.log(this.side);
+        return;
+      }
+    },
+    drawLine() {
+      this.charts = echarts.init(document.getElementById("myChart"));
+      this.charts.setOption({
+        grid: {
+          bottom: "5%",
+          containLabel: true
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: this.opinion,
+          axisLabel: {
+            show: true,
+            interval: 0,
+            rotate: 45,
+            textStyle: {
+              color: "#333"
+            }
+          }
+        },
+        yAxis: {
+          name: "单位(元)",
+          type: "category",
+          boundaryGap: false,
+          data: this.opinionData
+        },
+
+        series: [
+          {
+            name: this.typename,
+            type: "line",
+            stack: "总量",
+            data: this.price
+          }
+        ]
+      });
+    },
+    getmap() {
+      this.$api
+        .getmap({ coin_id: this.coin_id, side: this.side })
+        .then(data => {
+          console.log(data, "走势图");
+          if (data.code == 1) {
+            this.opinion = data.data.info_x;
+            this.opinionData = data.data.info_y;
+            this.drawLine();
+          }
+        });
+    },
     gettype() {
       console.log(11111);
 
       this.$api.gettype().then(data => {
         console.log(data, "获取币种");
         if (data.code == 1) {
-          this.typename=data.data.info[0].coin_name
-          this.coin_id=data.data.info[0].coin_id
+          this.typename = data.data.info[0].coin_name;
+          this.coin_id = data.data.info[0].coin_id;
           this.typelist = data.data.info;
-           
         }
       });
     },
     changetype(a, b) {
       // console.log(a,b);
       this.type = b;
+      // this.side = b;
       this.typename = a.coin_name;
-      this.coin_id=a.coin_id
-      console.log(this.typename,this.coin_id);
-      
+      this.coin_id = a.coin_id;
+      console.log(this.typename, this.coin_id);
+      this.getmap();
     },
     // getMarketTotal() {
     //   this.$api.getMarketTotal().then(data => {
@@ -174,31 +258,69 @@ export default {
 
     handleRule() {},
 
-    handleChangeSort(type) {
-      let sort = this[type] === 1 ? 2 : 1;
-      this[type] = sort;
-    },
+    // handleChangeSort(type) {
+    //   let sort = this[type] === 1 ? 2 : 1;
+    //   this[type] = sort;
+    // },
 
     handleSearch() {
+      console.log(this.$refs.list.coin_id);
+      console.log(this.$refs.list.side);
+      // this.$refs.list.coin_id
+      //  this.$refs.list.side
       this.$refs.list.getMarketList();
     }
   },
+
   created() {
+    this.gettype();
     // this.isTip = true;
+    this.getmap();
+    // this.drawLine();
   },
   mounted() {
     // this.getMarketTotal();
-    this.gettype();
+    // this.gettype();
+    // this.getmap()
+    this.drawLine();
   }
 };
 </script>
 
 <style lang='scss'>
+.first {
+  margin-top: 6px;
+  // width: 100%;
+  display: flex;
+  justify-content: space-around;
+
+  .top {
+    width: 30%;
+    height: 2.5rem;
+    text-align: center;
+    border-radius: 4px;
+    line-height: 2.5rem;
+    // align-items: center;
+    border: 1px solid #bebebe;
+  }
+  .typeone {
+    color: #4470ff;
+    border: 1px solid #4470ff;
+  }
+}
 .type-name {
   color: black;
   font-size: 14px;
   padding-top: 10px;
   font-weight: 600;
+}
+.bgc {
+  width: 100%;
+  height: 1vh;
+  background-color: #f4f4f4;
+}
+#myChart {
+  margin: 0 auto;
 }
 .typeclass {
   color: #567dff;
@@ -235,8 +357,10 @@ export default {
   .main {
     // padding: 1.6rem;
     .list_wrap {
+      border:1px solid red;
       width: 100%;
-      height: 200px;
+      height: 46vh;
+      margin-bottom: 52px;
     }
   }
   .market_type {
